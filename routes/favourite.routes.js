@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const Favourite = require("../models/Favourite.model");
+const { isAuthenticated } = require("./../middleware/jwt.middleware");
 
 // Getting all favourite photos
 
-router.get("/", (req, res, next) => {
+router.get("/", isAuthenticated, (req, res, next) => {
   Favourite.find()
     .then((allFavourites) => {
       res.status(200).json(allFavourites);
@@ -15,7 +16,7 @@ router.get("/", (req, res, next) => {
 
 // Creating a favourite photo
 
-router.post("/:photoId", (req, res, next) => {
+router.post("/:photoId", isAuthenticated, (req, res, next) => {
   Favourite.create({
     photoId: req.body.photoUrl,
     userId: req.body.username,
@@ -30,7 +31,7 @@ router.post("/:photoId", (req, res, next) => {
 
 // Deleting the favourite photo
 
-router.delete("/:favouriteId", (req, res, next) => {
+router.delete("/:favouriteId", isAuthenticated, (req, res, next) => {
   Favourite.findByIdAndDelete(req.params.favouriteId)
     .then(() => {
       res.sendStatus(204);

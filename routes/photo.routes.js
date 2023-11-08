@@ -1,9 +1,10 @@
 const router = require("express").Router();
 const Photo = require("../models/Photo.model");
+const { isAuthenticated } = require("./../middleware/jwt.middleware");
 
 // Creating a new photo
 
-router.post("/", (req, res, next) => {
+router.post("/", isAuthenticated, (req, res, next) => {
   Photo.create({
     photoUrl: req.body.photoUrl,
     photoDescription: req.body.photoDescription,
@@ -45,7 +46,7 @@ router.get("/:photoId", (req, res, next) => {
 
 // Updating a photo
 
-router.put("/:photoId", (req, res, next) => {
+router.put("/:photoId", isAuthenticated, (req, res, next) => {
   Photo.findByIdAndUpdate(req.params.photoId, req.body, { new: true })
     .then((updatedPhoto) => {
       res.status(200).json(updatedPhoto);
@@ -57,7 +58,7 @@ router.put("/:photoId", (req, res, next) => {
 
 // Deleting the photo
 
-router.delete("/:photoId", (req, res, next) => {
+router.delete("/:photoId", isAuthenticated, (req, res, next) => {
   Photo.findByIdAndDelete(req.params.photoId)
     .then(() => {
       res.status(204).send();
