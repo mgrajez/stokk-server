@@ -1,12 +1,30 @@
+// const express = require("express");
 const router = require("express").Router();
 const Photo = require("../models/Photo.model");
 const { isAuthenticated } = require("./../middleware/jwt.middleware");
+const fileUploader = require("../config/cloudinary.config");
+
+// POST "/api/upload" => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
+router.post("/upload", fileUploader.single("imageUrl"), (req, res, next) => {
+  // console.log("file is: ", req.file)
+
+  if (!req.file) {
+    next(new Error("No file uploaded!"));
+    return;
+  }
+
+  // Get the URL of the uploaded file and send it as a response.
+  // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
+
+  res.json({ fileUrl: req.file.path });
+});
 
 // Creating a new photo
 
 router.post("/", isAuthenticated, (req, res, next) => {
   Photo.create({
     photoUrl: req.body.photoUrl,
+    userId: req.payload._id,
     photoDescription: req.body.photoDescription,
     photoWidth: req.body.photoWidth,
     photoHeight: req.body.photoHeight,
@@ -47,7 +65,10 @@ router.get("/:photoId", (req, res, next) => {
 // Updating a photo
 
 router.put("/:photoId", isAuthenticated, (req, res, next) => {
-  Photo.findByIdAndUpdate(req.params.photoId, req.body, { new: true })
+  const photoId = req.params.photoId;
+  Photo.findOneAndUpdate({ _id: photoId, userId: req.payload._id }, req.body, {
+    new: true,
+  })
     .then((updatedPhoto) => {
       res.status(200).json(updatedPhoto);
     })
@@ -59,7 +80,8 @@ router.put("/:photoId", isAuthenticated, (req, res, next) => {
 // Deleting the photo
 
 router.delete("/:photoId", isAuthenticated, (req, res, next) => {
-  Photo.findByIdAndDelete(req.params.photoId)
+  const photoId = req.params.photoId;
+  Photo.findOneAndDelete({ _id: photoId, userId: req.payload._id })
     .then(() => {
       res.status(204).send();
     })

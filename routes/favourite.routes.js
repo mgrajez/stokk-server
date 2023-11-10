@@ -5,7 +5,8 @@ const { isAuthenticated } = require("./../middleware/jwt.middleware");
 // Getting all favourite photos
 
 router.get("/", isAuthenticated, (req, res, next) => {
-  Favourite.find()
+  Favourite.find({ userId: req.payload._id })
+    .populate("photoId")
     .then((allFavourites) => {
       res.status(200).json(allFavourites);
     })
@@ -18,8 +19,8 @@ router.get("/", isAuthenticated, (req, res, next) => {
 
 router.post("/:photoId", isAuthenticated, (req, res, next) => {
   Favourite.create({
-    photoId: req.body.photoUrl,
-    userId: req.body.username,
+    photoId: req.params.photoId,
+    userId: req.payload._id,
   })
     .then((createdFavourite) => {
       res.status(201).json(createdFavourite);
@@ -32,7 +33,8 @@ router.post("/:photoId", isAuthenticated, (req, res, next) => {
 // Deleting the favourite photo
 
 router.delete("/:favouriteId", isAuthenticated, (req, res, next) => {
-  Favourite.findByIdAndDelete(req.params.favouriteId)
+  const favouriteId = req.params.favouriteId;
+  Favourite.findOneAndDelete({ _id: favouriteId, userId: req.payload._id })
     .then(() => {
       res.sendStatus(204);
     })

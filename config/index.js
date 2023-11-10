@@ -35,4 +35,11 @@ module.exports = (app) => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: false }));
   app.use(cookieParser());
+  // app.use((req, res) => {
+  //   console.log(req.body);
+
+  //   res.on("finish", () => {
+  //     console.log(res);
+  //   });
+  // });
 };

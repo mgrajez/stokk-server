@@ -1,10 +1,11 @@
+// const mongoose = require("mongoose");
 const { Schema, model } = require("mongoose");
 
 const photoSchema = new Schema({
-  photoUrl: { type: String, required: true },
-  photoDescription: { type: String, required: true },
-  photoWidth: { type: Number, required: true },
-  photoHeight: { type: Number, required: true },
+  url: { type: String, required: true },
+  description: { type: String, required: true },
+  width: { type: Number, required: true },
+  height: { type: Number, required: true },
   userId: { type: Schema.Types.ObjectId, ref: "User", required: true },
   portfolioUrl: String,
 });
