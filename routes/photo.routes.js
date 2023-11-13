@@ -32,6 +32,7 @@ router.post(
 // Getting photos of the specific user
 router.get("/mine", isAuthenticated, (req, res, next) => {
   const userId = req.payload._id;
+  console.log("userId", userId);
   Photo.find({ userId })
     .then((userPhotos) => {
       res.status(200).json(userPhotos);
