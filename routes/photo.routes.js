@@ -4,39 +4,31 @@ const Photo = require("../models/Photo.model");
 const { isAuthenticated } = require("./../middleware/jwt.middleware");
 const fileUploader = require("../config/cloudinary.config");
 
-// POST "/api/upload" => Route that receives the image, sends it to Cloudinary via the fileUploader and returns the image URL
-router.post("/upload", fileUploader.single("imageUrl"), (req, res, next) => {
-  // console.log("file is: ", req.file)
-
-  if (!req.file) {
-    next(new Error("No file uploaded!"));
-    return;
-  }
-
-  // Get the URL of the uploaded file and send it as a response.
-  // 'fileUrl' can be any name, just make sure you remember to use the same when accessing it on the frontend
-
-  res.json({ fileUrl: req.file.path });
-});
-
 // Creating a new photo
 
-router.post("/", isAuthenticated, (req, res, next) => {
-  Photo.create({
-    photoUrl: req.body.photoUrl,
-    userId: req.payload._id,
-    photoDescription: req.body.photoDescription,
-    photoWidth: req.body.photoWidth,
-    photoHeight: req.body.photoHeight,
-    portfolioUrl: req.body.portfolioUrl,
-  })
-    .then((createdPhoto) => {
-      res.status(201).json(createdPhoto);
+router.post(
+  "/",
+  isAuthenticated,
+  fileUploader.single("url"),
+
+  (req, res, next) => {
+    console.log(req.file);
+    Photo.create({
+      url: req.file.path,
+      userId: req.payload._id,
+      description: req.body.description,
+      width: req.body.width,
+      height: req.body.height,
+      portfolioUrl: req.body.portfolioUrl,
     })
-    .catch((error) => {
-      next(error);
-    });
-});
+      .then((createdPhoto) => {
+        res.status(201).json(createdPhoto);
+      })
+      .catch((error) => {
+        next(error);
+      });
+  }
+);
 
 // Getting all photos
 
