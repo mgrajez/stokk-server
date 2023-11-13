@@ -1,4 +1,3 @@
-// const express = require("express");
 const router = require("express").Router();
 const Photo = require("../models/Photo.model");
 const { isAuthenticated } = require("./../middleware/jwt.middleware");
@@ -29,6 +28,18 @@ router.post(
       });
   }
 );
+
+// Getting photos of the specific user
+router.get("/mine", isAuthenticated, (req, res, next) => {
+  const userId = req.payload._id;
+  Photo.find({ userId })
+    .then((userPhotos) => {
+      res.status(200).json(userPhotos);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
 
 // Getting all photos
 
