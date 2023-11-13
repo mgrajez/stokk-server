@@ -33,6 +33,7 @@ router.post(
 router.get("/mine", isAuthenticated, (req, res, next) => {
   const userId = req.payload._id;
   console.log("userId", userId);
+  console.log("hi monika");
   Photo.find({ userId })
     .then((userPhotos) => {
       res.status(200).json(userPhotos);
@@ -82,16 +83,23 @@ router.put("/:photoId", isAuthenticated, (req, res, next) => {
 });
 
 // Deleting the photo
-
-router.delete("/:photoId", isAuthenticated, (req, res, next) => {
+router.delete("/:photoId", isAuthenticated, async (req, res, next) => {
   const photoId = req.params.photoId;
-  Photo.findOneAndDelete({ _id: photoId, userId: req.payload._id })
-    .then(() => {
-      res.status(204).send();
-    })
-    .catch((error) => {
-      next(error);
+
+  try {
+    const deletedPhoto = await Photo.deleteOne({
+      _id: photoId,
+      userId: req.payload._id,
     });
+
+    if (deletedPhoto.deletedCount === 1) {
+      res.status(204).send();
+    } else {
+      res.status(404).json({ message: "Photo not found" });
+    }
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
