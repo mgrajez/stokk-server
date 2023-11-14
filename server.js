@@ -4,5 +4,5 @@ const app = require("./app");
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
-  console.log(`Server listening on https://stokk-app.onrender.com/api`);
+  console.log(`Server listening on "http://localhost:5005/api"`);
 });
