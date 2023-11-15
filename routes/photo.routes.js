@@ -45,14 +45,36 @@ router.get("/mine", isAuthenticated, (req, res, next) => {
 
 // Getting all photos
 
-router.get("/", (req, res, next) => {
-  Photo.find()
-    .then((allPhotos) => {
-      res.status(200).json(allPhotos);
-    })
-    .catch((error) => {
-      next(error);
-    });
+// router.get("/", (req, res, next) => {
+//   Photo.find()
+//     .then((allPhotos) => {
+//       res.status(200).json(allPhotos);
+//     })
+//     .catch((error) => {
+//       next(error);
+//     });
+// });
+
+// Getting all photos or searching by description
+router.get("/", async (req, res, next) => {
+  const { q } = req.query;
+
+  try {
+    let photos;
+    if (q) {
+      // If there is a search query, filter by description
+      photos = await Photo.find({
+        description: { $regex: new RegExp(q, "i") },
+      });
+    } else {
+      // If there is no search query, get all photos
+      photos = await Photo.find();
+    }
+
+    res.status(200).json(photos);
+  } catch (error) {
+    next(error);
+  }
 });
 
 // Getting a specific photo
