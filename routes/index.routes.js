@@ -7,6 +7,6 @@ router.get("/", (req, res, next) => {
 
 router.use("/auth", require("./auth.routes"));
 router.use("/photos", require("./photo.routes"));
-router.use("/favourites", require("./favourite.routes"));
+router.use("/favorites", require("./favorite.routes"));
 
 module.exports = router;
