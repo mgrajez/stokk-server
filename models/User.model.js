@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-// TODO: Please make sure you edit the User model to whatever makes sense in this case
+// Defining user schema
 const userSchema = new Schema(
   {
     email: {
@@ -22,7 +22,7 @@ const userSchema = new Schema(
     },
   },
   {
-    // this second object adds extra properties: `createdAt` and `updatedAt`
+    // This object adds extra properties: `createdAt` and `updatedAt`
     timestamps: true,
   }
 );

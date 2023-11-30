@@ -17,19 +17,6 @@ router.get("/", isAuthenticated, (req, res, next) => {
 
 // Creating a favorite photo
 
-// router.post("/:photoId", isAuthenticated, (req, res, next) => {
-//   Favorite.create({
-//     photoId: req.params.photoId,
-//     userId: req.payload._id,
-//   })
-//     .then((createdFavorite) => {
-//       res.status(201).json(createdFavorite);
-//     })
-//     .catch((error) => {
-//       next(error);
-//     });
-// });
-
 router.post("/:photoId", isAuthenticated, async (req, res, next) => {
   try {
     const createdFavorite = await Favorite.create({

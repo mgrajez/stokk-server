@@ -4,9 +4,9 @@ module.exports = (app) => {
     res.status(404).json({ message: "This route does not exist" });
   });
 
+  // Middleware for handling general server errors
   app.use((err, req, res, next) => {
     // whenever you call next(err), this middleware will handle the error
-    // always logs the error
     console.error("ERROR", req.method, req.path, err);
 
     // only render if the error ocurred before sending the response
